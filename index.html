@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>點餐系統</title>
+    <style>
+        body {
+            font-family: Arial, "Microsoft JhengHei", sans-serif;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        #loginSection {
+            text-align: center;
+            margin: 50px auto;
+        }
+        
+        #orderSection {
+            display: none;
+        }
+        
+        .menu-item {
+            display: inline-block;
+            width: 48%;
+            margin: 5px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        
+        .quantity-input {
+            width: 60px;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+        
+        .highlight {
+            background-color: lightgreen;
+        }
+        
+        .total-section {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+        }
+        
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        button:hover {
+            background-color: #45a049;
+        }
+        
+        @media (max-width: 600px) {
+            .menu-item {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="loginSection">
+        <h2>請輸入密碼</h2>
+        <input type="password" id="passwordInput">
+        <button onclick="checkPassword()">登入</button>
+    </div>
+
+    <div id="orderSection">
+        <h1>點餐系統</h1>
+        
+        <div id="menuItems">
+            <div class="menu-item">
+                <span>蚵仔煎 - $80</span>
+                <input type="number" class="quantity-input" data-price="80" min="0">
+            </div>
+            <div class="menu-item">
+                <span>清蒸綜合鍋 - $100</span>
+                <input type="number" class="quantity-input" data-price="100" min="0">
+            </div>
+            <div class="menu-item">
+                <span>蝦仁煎 - $80</span>
+                <input type="number" class="quantity-input" data-price="80" min="0">
+            </div>
+            <div class="menu-item">
+                <span>炒麵 - $60</span>
+                <input type="number" class="quantity-input" data-price="60" min="0">
+            </div>
+            <div class="menu-item">
+                <span>蛋煎 - $80</span>
+                <input type="number" class="quantity-input" data-price="80" min="0">
+            </div>
+            <div class="menu-item">
+                <span>炒米粉 - $60</span>
+                <input type="number" class="quantity-input" data-price="60" min="0">
+            </div>
+            <div class="menu-item">
+                <span>綜合煎 - $90</span>
+                <input type="number" class="quantity-input" data-price="90" min="0">
+            </div>
+            <div class="menu-item">
+                <span>藥燉排骨 - $100</span>
+                <input type="number" class="quantity-input" data-price="100" min="0">
+            </div>
+            <div class="menu-item">
+                <span>脆皮臭豆腐 - $70</span>
+                <input type="number" class="quantity-input" data-price="70" min="0">
+            </div>
+            <div class="menu-item">
+                <span>當歸土虱（頭） - $100</span>
+                <input type="number" class="quantity-input" data-price="100" min="0">
+            </div>
+            <div class="menu-item">
+                <span>麻辣臭豆腐鍋 - $100</span>
+                <input type="number" class="quantity-input" data-price="100" min="0">
+            </div>
+            <div class="menu-item">
+                <span>當歸土虱（中間） - $100</span>
+                <input type="number" class="quantity-input" data-price="100" min="0">
+            </div>
+            <div class="menu-item">
+                <span>麻辣鴨血鍋 - $100</span>
+                <input type="number" class="quantity-input" data-price="100" min="0">
+            </div>
+            <div class="menu-item">
+                <span>當歸土虱（尾巴） - $100</span>
+                <input type="number" class="quantity-input" data-price="100" min="0">
+            </div>
+            <div class="menu-item">
+                <span>麻辣綜合鍋 - $100</span>
+                <input type="number" class="quantity-input" data-price="100" min="0">
+            </div>
+            <div class="menu-item">
+                <span>鴨肉油飯 - $120</span>
+                <input type="number" class="quantity-input" data-price="120" min="0">
+            </div>
+        </div>
+
+        <div class="total-section">
+            <h3>總計: <span id="totalAmount">$0</span></h3>
+            <div>
+                <label>付款金額：</label>
+                <input type="number" id="paymentInput" min="0">
+            </div>
+            <h3>找零: <span id="changeAmount">$0</span></h3>
+        </div>
+
+        <button onclick="clearAll()">全部清除</button>
+    </div>
+
+    <script>
+        function checkPassword() {
+            const password = document.getElementById('passwordInput').value;
+            if (password === 'andy') {
+                document.getElementById('loginSection').style.display = 'none';
+                document.getElementById('orderSection').style.display = 'block';
+            } else {
+                alert('密碼錯誤！');
+            }
+        }
+
+        function calculateTotal() {
+            let total = 0;
+            document.querySelectorAll('.quantity-input').forEach(input => {
+                const price = parseInt(input.getAttribute('data-price'));
+                const quantity = parseInt(input.value) || 0;
+                total += price * quantity;
+            });
+            document.getElementById('totalAmount').textContent = '$' + total;
+            calculateChange();
+        }
+
+        function calculateChange() {
+            const total = parseInt(document.getElementById('totalAmount').textContent.slice(1));
+            const payment = parseInt(document.getElementById('paymentInput').value) || 0;
+            const change = payment - total;
+            document.getElementById('changeAmount').textContent = '$' + (change >= 0 ? change : 0);
+        }
+
+        function clearAll() {
+            document.querySelectorAll('.quantity-input').forEach(input => {
+                input.value = '';
+                input.style.backgroundColor = 'white';
+            });
+            document.getElementById('paymentInput').value = '';
+            document.getElementById('totalAmount').textContent = '$0';
+            document.getElementById('changeAmount').textContent = '$0';
+        }
+
+        // 設置事件監聽器
+        document.querySelectorAll('.quantity-input').forEach(input => {
+            input.addEventListener('input', function() {
+                this.style.backgroundColor = this.value > 0 ? 'lightgreen' : 'white';
+                calculateTotal();
+            });
+        });
+
+        document.getElementById('paymentInput').addEventListener('input', calculateChange);
+    </script>
+</body>
+</html>
