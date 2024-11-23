@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>餐廳點餐系統</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        #loginPage {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        #loginForm {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .menu-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .menu-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .quantity-input {
+            width: 60px;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .total-section {
+            margin-top: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background: #45a049;
+        }
+
+        .changed {
+            background-color: #e8f5e9;
+        }
+
+        @media (max-width: 768px) {
+            .menu-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="loginPage">
+        <div id="loginForm">
+            <h2>請輸入密碼</h2>
+            <input type="password" id="passwordInput">
+            <button onclick="checkPassword()">登入</button>
+        </div>
+    </div>
+
+    <div id="mainContent" style="display: none;">
+        <div class="menu-container">
+            <div class="menu-item">
+                <span>蚵仔煎 $80</span>
+                <input type="number" class="quantity-input" data-price="80" min="0" value="0">
+            </div>
+            <div class="menu-item">
+                <span>清蒸綜合鍋 $100</span>
+                <input type="number" class="quantity-input" data-price="100" min="0" value="0">
+            </div>
+            <div class="menu-item">
+                <span>蝦仁煎 $80</span>
+                <input type="number" class="quantity-input" data-price="80" min="0" value="0">
+            </div>
+            <div class="menu-item">
+                <span>炒麵 $60</span>
+                <input type="number" class="quantity-input" data-price="60" min="0" value="0">
+            </div>
+            <div class="menu-item">
+                <span>蛋煎 $80</span>
+                <input type="number" class="quantity-input" data-price="80" min="0" value="0">
+            </div>
+            <div class="menu-item">
+                <span>炒米粉 $60</span>
+                <input type="number" class="quantity-input" data-price="60" min="0" value="0">
+            </div>
+            <div class="menu-item">
+                <span>綜合煎 $90</span>
+                <input type="number" class="quantity-input" data-price="90" min="0" value="0">
+            </div>
+            <div class="menu-item">
+                <span>藥燉排骨 $100</span>
+                <input type="number" class="quantity-input" data-price="100" min="0" value="0">
+            </div>
+            <div class="menu-item">
+                <span>脆皮臭豆腐 $70</span>
+                <input type="number" class="quantity-input" data-price="70" min="0" value="0">
+            </div>
+            <div class="menu-item">
+                <span>當歸土虱（頭）$100</span>
+                <input type="number" class="quantity-input" data-price="100" min="0" value="0">
+            </div>
+            <div class="menu-item">
+                <span>麻辣臭豆腐鍋 $100</span>
+                <input type="number" class="quantity-input" data-price="100" min="0" value="0">
+            </div>
+            <div class="menu-item">
+                <span>當歸土虱（中間）$100</span>
+                <input type="number" class="quantity-input" data-price="100" min="0" value="0">
+            </div>
+            <div class="menu-item">
+                <span>麻辣鴨血鍋 $100</span>
+                <input type="number" class="quantity-input" data-price="100" min="0" value="0">
+            </div>
+            <div class="menu-item">
+                <span>當歸土虱（尾巴）$100</span>
+                <input type="number" class="quantity-input" data-price="100" min="0" value="0">
+            </div>
+            <div class="menu-item">
+                <span>麻辣綜合鍋 $100</span>
+                <input type="number" class="quantity-input" data-price="100" min="0" value="0">
+            </div>
+            <div class="menu-item">
+                <span>鴨肉油飯 $120</span>
+                <input type="number" class="quantity-input" data-price="120" min="0" value="0">
+            </div>
+        </div>
+
+        <div class="total-section">
+            <h3>自動總計: $<span id="totalAmount">0</span></h3>
+            <div>
+                <label>付款金額：</label>
+                <input type="number" id="paymentAmount" min="0" value="0">
+            </div>
+            <h3>找零: $<span id="changeAmount">0</span></h3>
+            <button onclick="clearAll()">全部清除</button>
+        </div>
+    </div>
+
+    <script>
+        function checkPassword() {
+            const password = document.getElementById('passwordInput').value;
+            if (password === 'andy') {
+                document.getElementById('loginPage').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
+            } else {
+                alert('密碼錯誤！');
+            }
+        }
+
+        const quantities = document.querySelectorAll('.quantity-input');
+        quantities.forEach(input => {
+            input.addEventListener('input', function() {
+                if (this.value > 0) {
+                    this.classList.add('changed');
+                } else {
+                    this.classList.remove('changed');
+                }
+                calculateTotal();
+            });
+        });
+
+        function calculateTotal() {
+            let total = 0;
+            quantities.forEach(input => {
+                const price = parseInt(input.dataset.price);
+                const quantity = parseInt(input.value) || 0;
+                total += price * quantity;
+            });
+            
+            document.getElementById('totalAmount').textContent = total;
+            calculateChange();
+        }
+
+        function calculateChange() {
+            const total = parseInt(document.getElementById('totalAmount').textContent);
+            const payment = parseInt(document.getElementById('paymentAmount').value) || 0;
+            const change = payment - total;
+            document.getElementById('changeAmount').textContent = change;
+        }
+
+        document.getElementById('paymentAmount').addEventListener('input', calculateChange);
+
+        function clearAll() {
+            quantities.forEach(input => {
+                input.value = 0;
+                input.classList.remove('changed');
+            });
+            document.getElementById('paymentAmount').value = 0;
+            calculateTotal();
+        }
+    </script>
+</body>
+</html>
