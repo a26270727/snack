@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>點餐系統</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #f5f5f5;
+        }
+        .menu-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .menu-item {
+            display: grid;
+            grid-template-columns: 3fr 1fr 2fr 1fr;
+            gap: 10px;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .quantity-input {
+            width: 60px;
+            padding: 5px;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .quantity-btn {
+            padding: 5px 10px;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .quantity-btn:hover {
+            background-color: #45a049;
+        }
+        .total-section {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e8f5e9;
+            border-radius: 4px;
+        }
+        .change-section {
+            margin-top: 20px;
+        }
+        select, input {
+            padding: 5px;
+            margin: 5px;
+        }
+        .clear-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #f44336;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .clear-btn:hover {
+            background-color: #da190b;
+        }
+        .highlight {
+            background-color: #e8f5e9;
+        }
+    </style>
+</head>
+<body>
+    <div class="menu-container">
+        <div class="menu-item">
+            <span>蚵仔/蝦仁/蛋煎</span>
+            <span>$80</span>
+            <input type="number" class="quantity-input" value="0" min="0" data-price="80">
+            <div>
+                <button class="quantity-btn" onclick="adjustQuantity(this, -1)">-</button>
+                <button class="quantity-btn" onclick="adjustQuantity(this, 1)">+</button>
+            </div>
+        </div>
+        <div class="menu-item">
+            <span>綜合煎</span>
+            <span>$90</span>
+            <input type="number" class="quantity-input" value="0" min="0" data-price="90">
+            <div>
+                <button class="quantity-btn" onclick="adjustQuantity(this, -1)">-</button>
+                <button class="quantity-btn" onclick="adjustQuantity(this, 1)">+</button>
+            </div>
+        </div>
+        <div class="menu-item">
+            <span>脆皮臭豆腐</span>
+            <span>$70</span>
+            <input type="number" class="quantity-input" value="0" min="0" data-price="70">
+            <div>
+                <button class="quantity-btn" onclick="adjustQuantity(this, -1)">-</button>
+                <button class="quantity-btn" onclick="adjustQuantity(this, 1)">+</button>
+            </div>
+        </div>
+        <div class="menu-item">
+            <span>麻辣/排骨(鍋/當歸湯類)</span>
+            <span>$100</span>
+            <input type="number" class="quantity-input" value="0" min="0" data-price="100">
+            <div>
+                <button class="quantity-btn" onclick="adjustQuantity(this, -1)">-</button>
+                <button class="quantity-btn" onclick="adjustQuantity(this, 1)">+</button>
+            </div>
+        </div>
+        <div class="menu-item">
+            <span>炒麵/米粉</span>
+            <span>$60</span>
+            <input type="number" class="quantity-input" value="0" min="0" data-price="60">
+            <div>
+                <button class="quantity-btn" onclick="adjustQuantity(this, -1)">-</button>
+                <button class="quantity-btn" onclick="adjustQuantity(this, 1)">+</button>
+            </div>
+        </div>
+        <div class="menu-item">
+            <span>鴨肉油飯</span>
+            <span>$120</span>
+            <input type="number" class="quantity-input" value="0" min="0" data-price="120">
+            <div>
+                <button class="quantity-btn" onclick="adjustQuantity(this, -1)">-</button>
+                <button class="quantity-btn" onclick="adjustQuantity(this, 1)">+</button>
+            </div>
+        </div>
+
+        <div class="total-section">
+            <h3>總計: <span id="total">0</span> 元</h3>
+        </div>
+
+        <div class="change-section">
+            <select id="payment" onchange="calculateChange()">
+                <option value="0">請選擇付款金額</option>
+                <option value="100">100元</option>
+                <option value="200">200元</option>
+                <option value="300">300元</option>
+                <option value="400">400元</option>
+                <option value="500">500元</option>
+                <option value="600">600元</option>
+                <option value="700">700元</option>
+                <option value="800">800元</option>
+                <option value="900">900元</option>
+                <option value="1000">1000元</option>
+            </select>
+            或輸入金額: <input type="number" id="custom-payment" onchange="calculateChange()" min="0">
+            <div>找零: <span id="change">0</span> 元</div>
+        </div>
+
+        <button class="clear-btn" onclick="clearAll()">全部清除</button>
+    </div>
+
+    <script>
+        function adjustQuantity(btn, delta) {
+            const input = btn.parentElement.parentElement.querySelector('.quantity-input');
+            const newValue = Math.max(0, parseInt(input.value) + delta);
+            input.value = newValue;
+            updateHighlight(input);
+            calculateTotal();
+        }
+
+        function updateHighlight(input) {
+            const menuItem = input.parentElement;
+            if (parseInt(input.value) > 0) {
+                menuItem.classList.add('highlight');
+            } else {
+                menuItem.classList.remove('highlight');
+            }
+        }
+
+        function calculateTotal() {
+            const inputs = document.querySelectorAll('.quantity-input');
+            let total = 0;
+            inputs.forEach(input => {
+                total += parseInt(input.value) * parseInt(input.dataset.price);
+            });
+            document.getElementById('total').textContent = total;
+            calculateChange();
+        }
+
+        function calculateChange() {
+            const total = parseInt(document.getElementById('total').textContent);
+            const selectPayment = parseInt(document.getElementById('payment').value);
+            const customPayment = parseInt(document.getElementById('custom-payment').value) || 0;
+            const payment = customPayment > 0 ? customPayment : selectPayment;
+            const change = payment - total;
+            document.getElementById('change').textContent = change >= 0 ? change : 0;
+        }
+
+        function clearAll() {
+            const inputs = document.querySelectorAll('.quantity-input');
+            inputs.forEach(input => {
+                input.value = 0;
+                updateHighlight(input);
+            });
+            document.getElementById('payment').value = "0";
+            document.getElementById('custom-payment').value = "";
+            calculateTotal();
+        }
+
+        // 為所有數量輸入框添加事件監聽器
+        document.querySelectorAll('.quantity-input').forEach(input => {
+            input.addEventListener('change', function() {
+                updateHighlight(this);
+                calculateTotal();
+            });
+        });
+    </script>
+</body>
+</html>
