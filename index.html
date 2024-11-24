@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>點餐系統</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 15px;
+            background-color: #f5f5f5;
+        }
+        
+        #loginScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .menu-container {
+            max-width: 430px;
+            margin: 0 auto;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .menu-item {
+            display: grid;
+            grid-template-columns: 2fr 1fr 2fr;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 5px;
+        }
+        
+        button {
+            padding: 5px 10px;
+            border: none;
+            background: #4CAF50;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        input[type="number"] {
+            width: 50px;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-align: center;
+        }
+        
+        .total-section {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f8f8;
+            border-radius: 5px;
+        }
+        
+        select {
+            padding: 5px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        
+        .changed {
+            background-color: #e8f5e9;
+        }
+    </style>
+</head>
+<body>
+    <div id="loginScreen">
+        <h2>請輸入密碼</h2>
+        <input type="password" id="passwordInput">
+        <button onclick="checkPassword()">登入</button>
+    </div>
+    
+    <div class="menu-container" style="display:none">
+        <div class="menu-item">
+            <div>蚵仔、蝦仁、蛋煎 $80</div>
+            <input type="number" class="quantity" min="0" value="0">
+            <div class="quantity-control">
+                <button onclick="changeQuantity(this, -1)">-</button>
+                <button onclick="changeQuantity(this, 1)">+</button>
+            </div>
+        </div>
+        
+        <div class="menu-item">
+            <div>綜合煎 $90</div>
+            <input type="number" class="quantity" min="0" value="0">
+            <div class="quantity-control">
+                <button onclick="changeQuantity(this, -1)">-</button>
+                <button onclick="changeQuantity(this, 1)">+</button>
+            </div>
+        </div>
+        
+        <div class="menu-item">
+            <div>脆皮臭豆腐 $70</div>
+            <input type="number" class="quantity" min="0" value="0">
+            <div class="quantity-control">
+                <button onclick="changeQuantity(this, -1)">-</button>
+                <button onclick="changeQuantity(this, 1)">+</button>
+            </div>
+        </div>
+        
+        <div class="menu-item">
+            <div>麻辣、排骨(鍋、當歸湯類) $100</div>
+            <input type="number" class="quantity" min="0" value="0">
+            <div class="quantity-control">
+                <button onclick="changeQuantity(this, -1)">-</button>
+                <button onclick="changeQuantity(this, 1)">+</button>
+            </div>
+        </div>
+        
+        <div class="menu-item">
+            <div>炒麵、米粉 $60</div>
+            <input type="number" class="quantity" min="0" value="0">
+            <div class="quantity-control">
+                <button onclick="changeQuantity(this, -1)">-</button>
+                <button onclick="changeQuantity(this, 1)">+</button>
+            </div>
+        </div>
+        
+        <div class="menu-item">
+            <div>鴨肉油飯 $120</div>
+            <input type="number" class="quantity" min="0" value="0">
+            <div class="quantity-control">
+                <button onclick="changeQuantity(this, -1)">-</button>
+                <button onclick="changeQuantity(this, 1)">+</button>
+            </div>
+        </div>
+        
+        <div class="total-section">
+            <div>總計: $<span id="total">0</span></div>
+            <div style="margin-top: 10px">
+                <label>付款金額：</label>
+                <select id="payment" onchange="calculateChange()">
+                    <option value="0">0</option>
+                    <option value="100">100</option>
+                    <option value="200">200</option>
+                    <option value="300">300</option>
+                    <option value="400">400</option>
+                    <option value="500">500</option>
+                    <option value="600">600</option>
+                    <option value="700">700</option>
+                    <option value="800">800</option>
+                    <option value="900">900</option>
+                    <option value="1000">1000</option>
+                </select>
+                <input type="number" id="customPayment" placeholder="自訂金額" onchange="calculateChange()">
+            </div>
+            <div style="margin-top: 10px">找零: $<span id="change">0</span></div>
+            <button onclick="clearAll()" style="margin-top: 10px">全部清除</button>
+        </div>
+    </div>
+
+    <script>
+        function checkPassword() {
+            const password = document.getElementById('passwordInput').value;
+            if (password === 'an') {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.querySelector('.menu-container').style.display = 'block';
+            } else {
+                alert('密碼錯誤！');
+            }
+        }
+
+        function changeQuantity(btn, delta) {
+            const input = btn.parentElement.parentElement.querySelector('input');
+            input.value = Math.max(0, parseInt(input.value) + delta);
+            input.classList.add('changed');
+            calculateTotal();
+        }
+
+        function calculateTotal() {
+            const prices = [80, 90, 70, 100, 60, 120];
+            const quantities = [...document.querySelectorAll('.quantity')].map(input => parseInt(input.value));
+            const total = prices.reduce((sum, price, i) => sum + price * quantities[i], 0);
+            document.getElementById('total').textContent = total;
+            calculateChange();
+        }
+
+        function calculateChange() {
+            const total = parseInt(document.getElementById('total').textContent);
+            let payment = parseInt(document.getElementById('payment').value);
+            const customPayment = document.getElementById('customPayment').value;
+            
+            if (customPayment) {
+                payment = parseInt(customPayment);
+            }
+            
+            const change = payment - total;
+            document.getElementById('change').textContent = change >= 0 ? change : 0;
+        }
+
+        function clearAll() {
+            document.querySelectorAll('.quantity').forEach(input => {
+                input.value = 0;
+                input.classList.remove('changed');
+            });
+            document.getElementById('payment').value = 0;
+            document.getElementById('customPayment').value = '';
+            calculateTotal();
+        }
+
+        // 監聽數量輸入變化
+        document.querySelectorAll('.quantity').forEach(input => {
+            input.addEventListener('input', function() {
+                if (parseInt(this.value) > 0) {
+                    this.classList.add('changed');
+                } else {
+                    this.classList.remove('changed');
+                }
+                calculateTotal();
+            });
+        });
+    </script>
+</body>
+</html>
