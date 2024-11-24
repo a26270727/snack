@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>點餐系統</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            margin: 0;
+            padding: 10px;
+            background-color: #f5f5f5;
+        }
+        .menu-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 8px;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .item-info {
+            flex: 1;
+        }
+        .item-name {
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+        .item-price {
+            color: #666;
+        }
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        button {
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            background-color: #fff;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        input[type="number"] {
+            width: 50px;
+            padding: 5px;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+        .total-section {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .change-section {
+            margin-top: 10px;
+        }
+        select {
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+        .clear-btn {
+            margin-top: 10px;
+            width: 100%;
+            padding: 10px;
+            background-color: #ff4444;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div id="menu">
+        <div class="menu-item">
+            <div class="item-info">
+                <div class="item-name">蚵仔、蝦仁、蛋煎</div>
+                <div class="item-price">$80</div>
+            </div>
+            <div class="quantity-control">
+                <button onclick="changeQuantity(0, -1)">-</button>
+                <input type="number" value="0" min="0" onchange="updateQuantity(0, this.value)">
+                <button onclick="changeQuantity(0, 1)">+</button>
+            </div>
+        </div>
+
+        <div class="menu-item">
+            <div class="item-info">
+                <div class="item-name">綜合煎</div>
+                <div class="item-price">$90</div>
+            </div>
+            <div class="quantity-control">
+                <button onclick="changeQuantity(1, -1)">-</button>
+                <input type="number" value="0" min="0" onchange="updateQuantity(1, this.value)">
+                <button onclick="changeQuantity(1, 1)">+</button>
+            </div>
+        </div>
+
+        <div class="menu-item">
+            <div class="item-info">
+                <div class="item-name">脆皮臭豆腐</div>
+                <div class="item-price">$70</div>
+            </div>
+            <div class="quantity-control">
+                <button onclick="changeQuantity(2, -1)">-</button>
+                <input type="number" value="0" min="0" onchange="updateQuantity(2, this.value)">
+                <button onclick="changeQuantity(2, 1)">+</button>
+            </div>
+        </div>
+
+        <div class="menu-item">
+            <div class="item-info">
+                <div class="item-name">麻辣、排骨(鍋、當歸湯類)</div>
+                <div class="item-price">$100</div>
+            </div>
+            <div class="quantity-control">
+                <button onclick="changeQuantity(3, -1)">-</button>
+                <input type="number" value="0" min="0" onchange="updateQuantity(3, this.value)">
+                <button onclick="changeQuantity(3, 1)">+</button>
+            </div>
+        </div>
+
+        <div class="menu-item">
+            <div class="item-info">
+                <div class="item-name">炒麵、米粉</div>
+                <div class="item-price">$60</div>
+            </div>
+            <div class="quantity-control">
+                <button onclick="changeQuantity(4, -1)">-</button>
+                <input type="number" value="0" min="0" onchange="updateQuantity(4, this.value)">
+                <button onclick="changeQuantity(4, 1)">+</button>
+            </div>
+        </div>
+
+        <div class="menu-item">
+            <div class="item-info">
+                <div class="item-name">鴨肉油飯</div>
+                <div class="item-price">$120</div>
+            </div>
+            <div class="quantity-control">
+                <button onclick="changeQuantity(5, -1)">-</button>
+                <input type="number" value="0" min="0" onchange="updateQuantity(5, this.value)">
+                <button onclick="changeQuantity(5, 1)">+</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="total-section">
+        <div>總計: <span id="total">0</span> 元</div>
+        <div class="change-section">
+            付款金額: 
+            <select id="payment" onchange="calculateChange()">
+                <option value="0">0</option>
+                <option value="100">100</option>
+                <option value="200">200</option>
+                <option value="300">300</option>
+                <option value="400">400</option>
+                <option value="500">500</option>
+                <option value="600">600</option>
+                <option value="700">700</option>
+                <option value="800">800</option>
+                <option value="900">900</option>
+                <option value="1000">1000</option>
+            </select>
+            <input type="number" id="customPayment" placeholder="自訂金額" onchange="calculateChange()">
+        </div>
+        <div>找零: <span id="change">0</span> 元</div>
+    </div>
+
+    <button class="clear-btn" onclick="clearAll()">全部清除</button>
+
+    <script>
+        const prices = [80, 90, 70, 100, 60, 120];
+        const quantities = new Array(6).fill(0);
+        
+        function updateQuantity(index, value) {
+            value = parseInt(value) || 0;
+            if (value < 0) value = 0;
+            quantities[index] = value;
+            updateTotal();
+            updateBackgroundColor(index, value);
+        }
+
+        function changeQuantity(index, delta) {
+            const input = document.querySelectorAll('input[type="number"]')[index];
+            const newValue = Math.max(0, parseInt(input.value || 0) + delta);
+            input.value = newValue;
+            updateQuantity(index, newValue);
+        }
+
+        function updateBackgroundColor(index, value) {
+            const menuItem = document.querySelectorAll('.menu-item')[index];
+            menuItem.style.backgroundColor = value > 0 ? '#e8f5e9' : 'white';
+        }
+
+        function updateTotal() {
+            const total = quantities.reduce((sum, qty, index) => sum + qty * prices[index], 0);
+            document.getElementById('total').textContent = total;
+            calculateChange();
+        }
+
+        function calculateChange() {
+            const total = parseInt(document.getElementById('total').textContent);
+            let payment = parseInt(document.getElementById('payment').value);
+            const customPayment = parseInt(document.getElementById('customPayment').value || 0);
+            
+            if (customPayment > 0) {
+                payment = customPayment;
+            }
+            
+            const change = Math.max(0, payment - total);
+            document.getElementById('change').textContent = change;
+        }
+
+        function clearAll() {
+            quantities.fill(0);
+            document.querySelectorAll('input[type="number"]').forEach(input => {
+                input.value = 0;
+            });
+            document.querySelectorAll('.menu-item').forEach(item => {
+                item.style.backgroundColor = 'white';
+            });
+            document.getElementById('payment').value = 0;
+            document.getElementById('customPayment').value = '';
+            updateTotal();
+        }
+    </script>
+</body>
+</html>
