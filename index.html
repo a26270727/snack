@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>美食訂購系統</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 10px;
+            background-color: #f4f4f4;
+        }
+        .password-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .menu-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+        .category {
+            width: 48%;
+            margin-bottom: 10px;
+        }
+        .item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            padding: 5px;
+            background-color: white;
+        }
+        .item input {
+            width: 50px;
+            text-align: center;
+        }
+        .quantity-control {
+            display: flex;
+            align-items: center;
+        }
+        .total-section {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .zero-quantity {
+            background-color: white;
+        }
+        .non-zero-quantity {
+            background-color: #90EE90;
+        }
+    </style>
+</head>
+<body>
+    <div class="password-container">
+        <h2>請輸入密碼</h2>
+        <input type="password" id="password" placeholder="請輸入密碼">
+        <button onclick="checkPassword()">確認</button>
+    </div>
+
+    <div id="mainContent" style="display:none;">
+        <div class="menu-container">
+            <div class="category">
+                <h3>主餐類</h3>
+                <div class="item">
+                    <span>主餐 $40</span>
+                    <div class="quantity-control">
+                        <button onclick="changeQuantity(this, -1)">-</button>
+                        <input type="number" min="0" value="0" onchange="updateQuantity(this)">
+                        <button onclick="changeQuantity(this, 1)">+</button>
+                    </div>
+                </div>
+                <div class="item">
+                    <span>主餐 $60</span>
+                    <div class="quantity-control">
+                        <button onclick="changeQuantity(this, -1)">-</button>
+                        <input type="number" min="0" value="0" onchange="updateQuantity(this)">
+                        <button onclick="changeQuantity(this, 1)">+</button>
+                    </div>
+                </div>
+                <div class="item">
+                    <span>主餐 $65</span>
+                    <div class="quantity-control">
+                        <button onclick="changeQuantity(this, -1)">-</button>
+                        <input type="number" min="0" value="0" onchange="updateQuantity(this)">
+                        <button onclick="changeQuantity(this, 1)">+</button>
+                    </div>
+                </div>
+                <div class="item">
+                    <span>主餐 $70</span>
+                    <div class="quantity-control">
+                        <button onclick="changeQuantity(this, -1)">-</button>
+                        <input type="number" min="0" value="0" onchange="updateQuantity(this)">
+                        <button onclick="changeQuantity(this, 1)">+</button>
+                    </div>
+                </div>
+                <div class="item">
+                    <span>水餃 $5</span>
+                    <div class="quantity-control">
+                        <button onclick="changeQuantity(this, -1)">-</button>
+                        <input type="number" min="0" value="0" onchange="updateQuantity(this)">
+                        <button onclick="changeQuantity(this, 1)">+</button>
+                    </div>
+                </div>
+                <div class="item">
+                    <span>生水餃 $4.5</span>
+                    <div class="quantity-control">
+                        <button onclick="changeQuantity(this, -1)">-</button>
+                        <input type="number" min="0" value="0" onchange="updateQuantity(this)">
+                        <button onclick="changeQuantity(this, 1)">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="category">
+                <h3>湯品類</h3>
+                <div class="item">
+                    <span>湯品 $35</span>
+                    <div class="quantity-control">
+                        <button onclick="changeQuantity(this, -1)">-</button>
+                        <input type="number" min="0" value="0" onchange="updateQuantity(this)">
+                        <button onclick="changeQuantity(this, 1)">+</button>
+                    </div>
+                </div>
+                <div class="item">
+                    <span>湯品 $45</span>
+                    <div class="quantity-control">
+                        <button onclick="changeQuantity(this, -1)">-</button>
+                        <input type="number" min="0" value="0" onchange="updateQuantity(this)">
+                        <button onclick="changeQuantity(this, 1)">+</button>
+                    </div>
+                </div>
+                <div class="item">
+                    <span>湯品 $50</span>
+                    <div class="quantity-control">
+                        <button onclick="changeQuantity(this, -1)">-</button>
+                        <input type="number" min="0" value="0" onchange="updateQuantity(this)">
+                        <button onclick="changeQuantity(this, 1)">+</button>
+                    </div>
+                </div>
+                <div class="item">
+                    <span>湯品 $55</span>
+                    <div class="quantity-control">
+                        <button onclick="changeQuantity(this, -1)">-</button>
+                        <input type="number" min="0" value="0" onchange="updateQuantity(this)">
+                        <button onclick="changeQuantity(this, 1)">+</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="menu-container">
+            <div class="category" style="width:100%;">
+                <h3>其他類</h3>
+                <div class="item">
+                    <span>鴨胗 $25</span>
+                    <div class="quantity-control">
+                        <button onclick="changeQuantity(this, -1)">-</button>
+                        <input type="number" min="0" value="0" onchange="updateQuantity(this)">
+                        <button onclick="changeQuantity(this, 1)">+</button>
+                    </div>
+                </div>
+                <div class="item">
+                    <span>鴨翅 $30</span>
+                    <div class="quantity-control">
+                        <button onclick="changeQuantity(this, -1)">-</button>
+                        <input type="number" min="0" value="0" onchange="updateQuantity(this)">
+                        <button onclick="changeQuantity(this, 1)">+</button>
+                    </div>
+                </div>
+                <div class="item">
+                    <span>海帶、薄豆干、黑豆干 $25</span>
+                    <div class="quantity-control">
+                        <button onclick="changeQuantity(this, -1)">-</button>
+                        <input type="number" min="0" value="0" onchange="updateQuantity(this)">
+                        <button onclick="changeQuantity(this, 1)">+</button>
+                    </div>
+                </div>
+                <div class="item">
+                    <span>豬頭皮、豬耳朵 $30</span>
+                    <div class="quantity-control">
+                        <button onclick="changeQuantity(this, -1)">-</button>
+                        <input type="number" min="0" value="0" onchange="updateQuantity(this)">
+                        <button onclick="changeQuantity(this, 1)">+</button>
+                    </div>
+                </div>
+                <div class="item">
+                    <span>小魚乾 $35</span>
+                    <div class="quantity-control">
+                        <button onclick="changeQuantity(this, -1)">-</button>
+                        <input type="number" min="0" value="0" onchange="updateQuantity(this)">
+                        <button onclick="changeQuantity(this, 1)">+</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="total-section">
+            <h3>訂單總計</h3>
+            <p>總金額: $<span id="totalAmount">0</span></p>
+            
+            <div>
+                <label>選擇付款金額:</label>
+                <select id="paymentAmount" onchange="calculateChange()">
+                    <option value="0">0</option>
+                    <option value="100">100</option>
+                    <option value="200">200</option>
+                    <option value="300">300</option>
+                    <option value="400">400</option>
+                    <option value="500">500</option>
+                    <option value="600">600</option>
+                    <option value="700">700</option>
+                    <option value="800">800</option>
+                    <option value="900">900</option>
+                    <option value="1000">1000</option>
+                </select>
+            </div>
+            
+            <input type="number" id="customPayment" placeholder="自訂付款金額" onchange="calculateChange()">
+            
+            <p>找零: $<span id="changeAmount">0</span></p>
+            
+            <button onclick="clearAll()">全部清除</button>
+        </div>
+    </div>
+
+    <script>
+        function checkPassword() {
+            const password = document.getElementById('password').value;
+            if (password === 'an') {
+                document.querySelector('.password-container').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
+            } else {
+                alert('密碼錯誤');
+            }
+        }
+
+        function changeQuantity(button, change) {
+            const input = button.parentNode.querySelector('input');
+            let value = parseInt(input.value) + change;
+            input.value = Math.max(0, value);
+            updateQuantity(input);
+        }
+
+        function updateQuantity(input) {
+            const value = parseInt(input.value);
+            input.parentNode.parentNode.className = 
+                value > 0 ? 'item non-zero-quantity' : 'item zero-quantity';
+            calculateTotal();
+        }
+
+        function calculateTotal() {
+            let total = 0;
+            document.querySelectorAll('.item').forEach(item => {
+                const price = parseFloat(item.querySelector('span').textContent.split('$')[1]);
+                const quantity = parseInt(item.querySelector('input').value);
+                total += price * quantity;
+            });
+            document.getElementById('totalAmount').textContent = total.toFixed(1);
+            calculateChange();
+        }
+
+        function calculateChange() {
+            const total = parseFloat(document.getElementById('totalAmount').textContent);
+            const paymentSelect = document.getElementById('paymentAmount');
+            const customPayment = document.getElementById('customPayment').value;
+            
+            let payment = customPayment ? parseFloat(customPayment) : parseFloat(paymentSelect.value);
+            
+            const change = payment - total;
+            document.getElementById('changeAmount').textContent = change >= 0 ? change.toFixed(1) : '0';
+        }
+
+        function clearAll() {
+            document.querySelectorAll('input[type="number"]').forEach(input => {
+                input.value = 0;
+                input.parentNode.parentNode.className = 'item zero-quantity';
+            });
+            document.getElementById('totalAmount').textContent = '0';
+            document.getElementById('changeAmount').textContent = '0';
+            document.getElementById('paymentAmount').selectedIndex = 0;
+            document.getElementById('customPayment').value = '';
+        }
+    </script>
+</body>
+</html>
